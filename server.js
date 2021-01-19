@@ -18,7 +18,7 @@ connection.connect((err) => {
 
   if (err) console.log(err);
 
-  console.log('connected as id ' + connection.threadId);
+  console.log("Welcome to the employee management program!");
 
   mainMenu();
 
@@ -34,8 +34,6 @@ connection.connect((err) => {
             });
 
             let action = actionChoice.action;
-
-            console.log(action);
         
             getSubject(action);
 
@@ -52,8 +50,6 @@ connection.connect((err) => {
 async function getSubject(action) {
 
     if (action == "Add departments, roles, or employees") {
-
-        console.log("successfully in add action");
         
         const add = await inquirer.prompt([
             {
@@ -65,7 +61,6 @@ async function getSubject(action) {
         ]);
 
         if (add.add == "Departments") {
-            console.log("first step adding department!");
             Departments("add");
         }
         else if (add.add == "Roles") {
@@ -102,8 +97,6 @@ async function getSubject(action) {
 
     else if (action == "Update employee roles") {
 
-        console.log("updating employees");
-
         Employees("update");
         
     }
@@ -131,8 +124,6 @@ async function Departments(action) {
     }
 
     else if (action == "add") {
-
-        console.log("You are adding a department!");
 
         let newDepartment;
 
@@ -181,8 +172,6 @@ async function Roles(action) {
     }
 
     else if (action == "add") {
-
-        console.log("You are adding Roles!");
 
         const role = await inquirer.prompt([
             {
@@ -239,7 +228,6 @@ async function Roles(action) {
                 let deptID = res;
                 deptID = JSON.parse(JSON.stringify(deptID));
                 deptID = deptID[0].id;
-                console.log("deptID:" + deptID);
                 resolve(deptID);
             });
 
@@ -295,8 +283,6 @@ async function Employees(action) {
 
     else if (action == "add") {
 
-        console.log("You are adding Employees!");
-
         const employee = await inquirer.prompt([
             {
                 type: "input",
@@ -351,7 +337,6 @@ async function Employees(action) {
                 let roleID = res;
                 roleID = JSON.parse(JSON.stringify(roleID));
                 roleID = roleID[0].id;
-                console.log("roleID:" + roleID);
                 resolve(roleID);
             });
 
@@ -390,15 +375,13 @@ async function Employees(action) {
 
         });
 
-        
         let selectedManager = await selectManager;
-
-        console.log(selectedManager);
-
 
         let setNewEmployee = new Promise((resolve, reject) => {
 
-            if (selectedManager !== 'null') {
+            console.log("selected manager: " + selectedManager);
+
+            if (selectedManager) {
 
                 const insert = connection.query(
                     "INSERT INTO employees SET ?",
@@ -509,7 +492,6 @@ async function Employees(action) {
                 let roleID = res;
                 roleID = JSON.parse(JSON.stringify(roleID));
                 roleID = roleID[0].id;
-                console.log("roleID:" + roleID);
                 resolve(roleID);
             });
 
