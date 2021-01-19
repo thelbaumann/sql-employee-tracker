@@ -155,8 +155,6 @@ async function Departments(action) {
             },
             function(err, res) {
               if (err) throw err;
-
-            //   updateTables();
             }
           );
 
@@ -268,8 +266,6 @@ async function Roles(action) {
                 },
                 function(err, res) {
                   if (err) throw err;
-    
-                //   updateTables();
                 }
               );
     
@@ -361,11 +357,13 @@ async function Employees(action) {
 
         });
 
+        let finalRoleID = await findRoleID;
+
         let firstName = employee.firstName;
         
         let lastName = employee.lastName;
 
-        let finalRoleID = await findRoleID;
+        
 
 
         let selectManager = new Promise((resolve, reject) => {
@@ -411,9 +409,7 @@ async function Employees(action) {
                       manager_id: selectedManager
                     },
                     function(err, res) {
-                      if (err) throw err;
-        
-                    //   updateTables();
+                      if (err) throw err;                 
                     }
                   );
 
@@ -428,8 +424,6 @@ async function Employees(action) {
                     },
                     function(err, res) {
                       if (err) throw err;
-        
-                    //   updateTables();
                     }
                   );
 
@@ -443,6 +437,105 @@ async function Employees(action) {
             });
 
         });   
+
+    }
+
+    else if (action == "update") {
+
+        
+        let selectEmployee = new Promise((resolve, reject) => {
+
+            const viewManagers = connection.query("SELECT id, first_name, last_name FROM employees", function(err, res) {
+                if (err) throw err;
+                
+                console.table(res);
+    
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message: 'Enter the ID number for the employee whose role you wish to change.',
+                        name: "employeeID"
+                    }
+                ]).then((response) => {
+    
+                    let chosenEmployee = response.employeeID;
+                    resolve(chosenEmployee);
+    
+                });
+            });
+
+
+        });
+
+        let selectedEmployee = await selectEmployee;
+
+        let selectRole = new Promise((resolve, reject) => {
+
+            const viewRoles = connection.query("SELECT title FROM roles", function(err, res) {
+                if (err) throw err;
+                let roleChoices = res;
+                roleChoices = JSON.parse(JSON.stringify(roleChoices));
+                let roleChoicesArr = [];
+                for (i=0; i<roleChoices.length; i++) {
+                    let newRole = roleChoices[i].title;
+                    roleChoicesArr.push(newRole);
+                }
+    
+                inquirer.prompt([
+                    {
+                        type: 'list',
+                        message: 'Which role does this employee hold?',
+                        choices: roleChoicesArr,
+                        name: "roleTitle"
+                    }
+                ]).then((response) => {
+    
+                    let newRole = response.roleTitle;
+                    newRole = newRole.toString();
+                    resolve(newRole);
+    
+                });
+            });
+
+
+        });
+
+        let selectedRole = await selectRole;
+
+        let findRoleID = new Promise((resolve, reject) => {
+
+            const viewIds = connection.query('SELECT id FROM company.roles WHERE title="' + selectedRole + '";', function(err, res) {
+                if (err) throw err;
+                let roleID = res;
+                roleID = JSON.parse(JSON.stringify(roleID));
+                roleID = roleID[0].id;
+                console.log("roleID:" + roleID);
+                resolve(roleID);
+            });
+
+        });
+
+        let finalRoleID = await findRoleID;
+
+        let updateEmployee = new Promise((resolve, reject) => {
+
+            const changeEmployee = connection.query('UPDATE employees SET employees.role_id ="' + finalRoleID + '" WHERE employees.id="' + selectedEmployee + '";', function(err, res) {
+                if (err) throw err;
+                resolve(res.affectedRows);
+            });
+
+        });
+
+        let updatedEmployee = await updateEmployee;
+
+        const view = await connection.query("SELECT * FROM employees", function(err, res) {
+            if (err) throw err;
+            console.table(res);
+            console.log("Employee has been updated!");
+            returnEnd();
+        });
+
+
 
     }
     
