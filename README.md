@@ -54,7 +54,9 @@ The main function of this application comes from the server.js file. It first es
 
 The app uses mainly await/async promises which contain connection queries. These queries are triggered through a series of if/else statements determined by the answers of the user via the inquirer prompts from the main menu. These if/else statements then determine the who/what of the action that needs to be completed, calls to the database for information, asks the user further information if needed, and then either adds, updates, or lists the query of information the user has requested.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Gif Walkthrough of Application](https://media.giphy.com/media/ydHpCjkdQ66XPoom4h/giphy.gif).
+
+[Watch the full video of the demonstration of this application here](https://youtu.be/LSc37ozuLtg)
 
 ## Contributing to this project
 Pull requests are welcome! Find my contact information below to reach out about collaborating with me.
